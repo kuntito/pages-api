@@ -1,0 +1,6 @@
+node_modules
+.env
+.cursorrules
+.vscode/settings.json
+tg.ts
+dist/*
