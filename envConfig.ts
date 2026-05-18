@@ -16,6 +16,7 @@ const requiredVariables = [
     "AWS_ACCESS_KEY",
     "AWS_SECRET_ACCESS_KEY",
     "AWS_BUCKET_NAME",
+    "NEON_CONN_STR",
 ] as const;
 
 for (const key of requiredVariables) {

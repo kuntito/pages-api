@@ -70,3 +70,82 @@ app.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);
 })
 `
+
+** NEON SETUP (POSTGRES) **
++   create acount:
+    `https://neon.tech`
+
++   create new project:
+    - postgres version: 17 (default)
+    - cloud service: AWS
+    - region: default
+
++   you'd need an env variable, `connection string`.
+    to get this,
+    click "Connect" (top right corner at time of writing)
+
+    a dialog would appear.
+
+    with a text like:
+    `psql 'postgresql://...some other things...'`
+
+    `delete the 'psql'`, everything within the single quotes is the connection string.
+
+    add to env variables, `.env`.
+    `NEON_CONN_STR=postgre...`
+
++   postgres client for node.js:
+    `npm i pg`
+
++   ts type definitions for `pg`:
+    `npm i -D @types/pg`
+
++   next, setup drizzle.
+    it serves a single source of truth for the SQL schema
+    and TS types.
+
+    you define the schema once, drizzle infers the types.
+
+    `npm install drizzle-orm`
+    `npm install -D drizzle-kit`
+
++   to create a table see:
+
+`
+import { pgTable, integer, serial, text } from "drizzle-orm/pg-core";
+
+export const songsTable = pgTable("songs", {
+    songId: serial("id").primaryKey(),
+    songS3Key: text("s3Key").notNull().unique(),
+    songTitle: text("title").notNull(),
+    songArtistName: text("artist").notNull(),
+    songAlbumArtUrl: text("albumArtUrl").notNull(),
+    songDurationMillis: integer("durationMillis").notNull(),
+});
+
+export type SongEntity = typeof songsTable.$inferSelect; 
+`
+
++   table blueprints are called schema.
+    all schemas are typically kept in the same directory.
+
+    to tell drizzle where the schemas are,
+    you'd need a config file in project root i.e. `drizzle.config.ts`
+
+`
+import { defineConfig } from 'drizzle-kit';
+import { envConfig } from './envConfig';
+
+export default defineConfig({
+    schema: "./schemas/*.ts",
+    dialect: "postgresql",
+    dbCredentials: {
+        url: envConfig.NEON_CONN_STR
+    }
+});
+`
+
+    where this, `schema: "./schemas/*.ts"`, is telling drizzle,
+    the project schemas are in a root directory called `schemas`.
+    
+    `*.ts` says all TypeScript files within `schemas`.
