@@ -39,7 +39,8 @@
         ...,
         "scripts": {
             ...,
-            "dev": "nodemon server.ts"
+            "dev": "nodemon server.ts",
+            "build": "tsc"
         },
         ...
     }
