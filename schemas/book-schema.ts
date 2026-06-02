@@ -17,3 +17,4 @@ export const booksTable = pgTable(booksTN, {
 });
 
 export type BookEntity = typeof booksTable.$inferSelect;
+export type BookInsertEntity = typeof booksTable.$inferInsert;

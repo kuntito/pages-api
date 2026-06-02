@@ -149,3 +149,15 @@ export default defineConfig({
     the project schemas are in a root directory called `schemas`.
     
     `*.ts` says all TypeScript files within `schemas`.
+
+
+** DEPENDENCIES **
++   handles file uploads
+    `npm install multer`
+    `npm install -D @types/multer`
+
++   aws S3 client for bucket operations:
+    `npm install @aws-sdk/client-s3`
+
+    generates signed urls for private S3 objects:
+    `npm install @aws-sdk/s3-request-presigner`
