@@ -14,6 +14,8 @@ export const booksTable = pgTable(booksTN, {
     bookCurrentPage: integer("currentPage")
         .notNull()
         .default(1),
+    bookPageCount: integer("pageCount")
+        .notNull(),
     lastReadDay: bigint(
         "lastReadDay", 
         { mode: "number" }

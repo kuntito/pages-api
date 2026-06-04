@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from "express";
-import { insertBookInDb, isBookPdf, uploadBookToS3 } from "./uploadBookHelpers";
+import { getPageCount, insertBookInDb, isBookPdf, uploadBookToS3 } from "./uploadBookHelpers";
 import { deleteFileFromS3 } from "../../../helpers/miscHelpers";
 
 type UploadBookResponse = 
@@ -64,6 +64,16 @@ const uploadBookReqHandler: RequestHandler = async(
             });
     }
 
+    const bookPageCount = await getPageCount(uploadedBookFile.buffer);
+    if (!bookPageCount) {
+        return res
+            .status(400)
+            .json({
+                success: false,
+                clientErrorMessage: "couldn't read page count, check PDF"
+            })
+    }
+
 
     const maybeS3Key = await uploadBookToS3(uploadedBookFile);
     if (maybeS3Key == null) {
@@ -83,7 +93,8 @@ const uploadBookReqHandler: RequestHandler = async(
     const isBookInsertedDb = await insertBookInDb(
         bookS3Key,
         bookTitle,
-        bookAuthorStr
+        bookAuthorStr,
+        bookPageCount,
     );
     if (!isBookInsertedDb) {
         await deleteFileFromS3(bookS3Key);

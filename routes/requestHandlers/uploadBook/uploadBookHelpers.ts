@@ -7,6 +7,7 @@ import { envConfig } from "../../../envConfig";
 import { BookInsertEntity, booksTable } from "../../../schemas/book-schema";
 import { pagesDb } from "../../../clients/neonDbClient";
 import { logDbError } from "../../../helpers/miscHelpers";
+import { PDFDocument } from "pdf-lib";
 
 
 export const isBookPdf = (
@@ -15,6 +16,21 @@ export const isBookPdf = (
     const bookFileExt = path.extname(file.originalname).toLowerCase();
     return bookFileExt === ".pdf";
 };
+
+
+export const getPageCount = async (
+    buffer: Buffer,
+): Promise<number | null> => {
+    try {
+        const pdfDoc = await PDFDocument.load(buffer);
+        return pdfDoc.getPageCount();
+    } catch (e) {
+        console.log("couldn't read page count from PDF");
+        console.log(`error: ${(e as Error).message}`);
+        console.log();
+    }
+    return null;
+}
 
 
 const generateS3Key = (
@@ -79,12 +95,14 @@ export const insertBookInDb = async (
     s3Key: string,
     bookTitle: string,
     bookAuthorStr: string,
+    bookPageCount: number,
 ): Promise<boolean> => {
     
     const bookEntity: BookInsertEntity = {
         bookS3Key: s3Key,
         bookTitle: bookTitle,
         bookAuthorStr: bookAuthorStr,
+        bookPageCount: bookPageCount,
     };
 
     try {

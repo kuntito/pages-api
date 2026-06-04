@@ -167,3 +167,6 @@ export default defineConfig({
 +   converts time strings to milliseconds, allows me do ms("10s"):
     `npm i ms@2.1.3`
     `npm i -D @types/ms`, `-D` means it's only available in the development environment
+
++   reads PDF metadata, used to extract page count
+    `npm install pdf-lib`
