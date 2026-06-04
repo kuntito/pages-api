@@ -1,6 +1,9 @@
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import ms from "ms";
 import { pagesS3Client } from "../clients/pagesS3Client";
 import { envConfig } from "../envConfig";
+
 
 /**
  * formats db error messages on new line.
@@ -57,3 +60,37 @@ export const deleteFileFromS3 = async (
         return false;
     }
 };
+
+
+/**
+ * an abstraction over the `ms` npm package,.
+ * converts a duration string to seconds.
+ *
+ * @param value - A duration string (e.g. "1s", "5m", "2h")
+ * @returns the duration in seconds
+ */
+export function secs(value: ms.StringValue): number {
+    return ms(value) / 1000;
+}
+
+
+
+/**
+ * returns a presigned url for an S3 object.
+ * the url expires after `expiresInSecs` seconds, default is 1 hour.
+ */
+export const getSignedObjectUrlS3 = async (
+    s3Key: string,
+    expiresInSecs: number = secs("1h")
+): Promise<string> => {
+    return getSignedUrl(
+        pagesS3Client,
+        new GetObjectCommand({
+            Bucket: envConfig.AWS_BUCKET_NAME,
+            Key: s3Key,
+        }),
+        {
+            expiresIn: expiresInSecs
+        }
+    )
+}

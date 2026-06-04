@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, bigint } from "drizzle-orm/pg-core";
 
 export const booksTN = "books";
 export const booksTable = pgTable(booksTN, {
@@ -14,6 +14,12 @@ export const booksTable = pgTable(booksTN, {
     bookCurrentPage: integer("currentPage")
         .notNull()
         .default(1),
+    lastReadDay: bigint(
+        "lastReadDay", 
+        { mode: "number" }
+    )
+        .notNull()
+        .default(0),
 });
 
 export type BookEntity = typeof booksTable.$inferSelect;
