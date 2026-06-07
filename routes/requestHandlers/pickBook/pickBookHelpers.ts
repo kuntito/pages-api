@@ -16,6 +16,7 @@ export const toBook = (
         author_str: bookEntity.bookAuthorStr,
         page_stopped_at: bookEntity.bookCurrentPage,
         book_url: bookUrl,
+        total_pages: bookEntity.bookPageCount,
     };
 }
 

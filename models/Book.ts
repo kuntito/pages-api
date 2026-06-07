@@ -4,4 +4,5 @@ export type Book = {
     author_str: string;
     page_stopped_at: number;
     book_url: string;
+    total_pages: number;
 }
