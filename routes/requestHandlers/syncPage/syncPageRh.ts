@@ -15,7 +15,7 @@ const syncPageReqHandler = async (
     req: Request,
     res: Response<SyncPageResponse>
 ) => {
-    const { bookIdStr, currentPageStr } = req.body;
+    const { bookId: bookIdStr, currentPage: currentPageStr } = req.body;
 
     const bookEntity = await validateBookId(bookIdStr);
     if (bookEntity == null) {
